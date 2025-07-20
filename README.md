@@ -31,7 +31,7 @@
 
 ## 🤝 Connect
 
-Follow and reach out on Twitter: [ᯅ ∴](https://twitter.com/0xPraetorian)
+Follow and reach out on Twitter: <a href="https://twitter.com/0xPraetorian" target="_blank" rel="noopener noreferrer">ᯅ ∴</a>
 
 ---
 
