@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { ExerciseCard } from "./ExerciseCard";
 import { WorkoutDay } from "@/data/workoutPlan";
 import { useToast } from "@/hooks/use-toast";
+import { BottomNav } from "@/components/BottomNav";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface WorkoutViewProps {
   workout: WorkoutDay;
@@ -15,6 +17,7 @@ interface WorkoutViewProps {
 export const WorkoutView = ({ workout, onBack }: WorkoutViewProps) => {
   const [exercises, setExercises] = useState(workout.exercises);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const completedCount = exercises.filter(ex => ex.completed).length;
   const totalCount = exercises.length;
@@ -54,7 +57,7 @@ export const WorkoutView = ({ workout, onBack }: WorkoutViewProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="container mx-auto px-4 py-4">
@@ -141,6 +144,7 @@ export const WorkoutView = ({ workout, onBack }: WorkoutViewProps) => {
           </Button>
         </div>
       </div>
+      {isMobile && <BottomNav />}
     </div>
   );
 };

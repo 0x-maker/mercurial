@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { ExerciseCard } from "./ExerciseCard";
 import { WorkoutDay } from "@/data/workoutPlan";
 import { useState } from "react";
+import { BottomNav } from "@/components/BottomNav";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface WorkoutDetailViewProps {
   workout: WorkoutDay;
@@ -118,11 +120,12 @@ const workoutInfo = {
 
 export const WorkoutDetailView = ({ workout, onBack, onStartWorkout }: WorkoutDetailViewProps) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'exercises'>('overview');
+  const isMobile = useIsMobile();
   
   const info = workoutInfo[workout.id as keyof typeof workoutInfo];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16">
       {/* Header */}
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="container mx-auto px-4 py-4">
@@ -263,6 +266,7 @@ export const WorkoutDetailView = ({ workout, onBack, onStartWorkout }: WorkoutDe
           </Button>
         </div>
       </div>
+      {isMobile && <BottomNav />}
     </div>
   );
 };
