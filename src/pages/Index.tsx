@@ -3,10 +3,12 @@ import { Dumbbell, Calendar, Target, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { WorkoutCard } from "@/components/WorkoutCard";
+import { WorkoutDetailView } from "@/components/WorkoutDetailView";
 import { WorkoutView } from "@/components/WorkoutView";
 import { workoutPlan, WorkoutDay } from "@/data/workoutPlan";
 
 const Index = () => {
+  const [currentView, setCurrentView] = useState<'home' | 'detail' | 'workout'>('home');
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutDay | null>(null);
   const [workouts, setWorkouts] = useState(workoutPlan);
 
@@ -15,26 +17,50 @@ const Index = () => {
     document.documentElement.classList.add('dark');
   }, []);
 
-  const handleStartWorkout = (workout: WorkoutDay) => {
+  const handleViewWorkout = (workout: WorkoutDay) => {
     setSelectedWorkout(workout);
+    setCurrentView('detail');
+  };
+
+  const handleStartWorkout = () => {
+    setCurrentView('workout');
   };
 
   const handleBackToHome = () => {
+    setCurrentView('home');
     setSelectedWorkout(null);
+  };
+
+  const handleBackToDetail = () => {
+    setCurrentView('detail');
   };
 
   const totalWorkouts = workouts.length;
   const completedWorkouts = workouts.filter(w => w.completed).length;
   const weekProgress = totalWorkouts > 0 ? (completedWorkouts / totalWorkouts) * 100 : 0;
 
-  if (selectedWorkout) {
+  // Show workout detail view
+  if (currentView === 'detail' && selectedWorkout) {
     return (
-      <WorkoutView 
+      <WorkoutDetailView 
         workout={selectedWorkout} 
-        onBack={handleBackToHome} 
+        onBack={handleBackToHome}
+        onStartWorkout={handleStartWorkout}
       />
     );
   }
+
+  // Show active workout view
+  if (currentView === 'workout' && selectedWorkout) {
+    return (
+      <WorkoutView 
+        workout={selectedWorkout} 
+        onBack={handleBackToDetail} 
+      />
+    );
+  }
+
+  // Show home view
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,10 +128,10 @@ const Index = () => {
               Start with {workouts[0].day} - {workouts[0].muscle} workout to build your foundation.
             </p>
             <Button 
-              onClick={() => handleStartWorkout(workouts[0])}
+              onClick={() => handleViewWorkout(workouts[0])}
               className="bg-workout-gradient hover:shadow-workout-glow transition-all duration-300"
             >
-              Start {workouts[0].day} Workout
+              View {workouts[0].day} Workout
             </Button>
           </CardContent>
         </Card>
@@ -120,8 +146,7 @@ const Index = () => {
                 day={workout.day}
                 muscle={workout.muscle}
                 exercises={workout.exercises}
-                completed={workout.completed}
-                onStartWorkout={() => handleStartWorkout(workout)}
+                onViewWorkout={() => handleViewWorkout(workout)}
               />
             ))}
           </div>

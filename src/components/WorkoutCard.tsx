@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Circle, Clock, Dumbbell } from "lucide-react";
+import { Clock, Dumbbell, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Exercise {
@@ -15,8 +15,7 @@ interface WorkoutCardProps {
   day: string;
   muscle: string;
   exercises: Exercise[];
-  completed?: boolean;
-  onStartWorkout?: () => void;
+  onViewWorkout?: () => void;
   className?: string;
 }
 
@@ -24,20 +23,19 @@ export const WorkoutCard = ({
   day,
   muscle,
   exercises,
-  completed = false,
-  onStartWorkout,
+  onViewWorkout,
   className
 }: WorkoutCardProps) => {
-  const completedExercises = exercises.filter(ex => ex.completed).length;
   const totalExercises = exercises.length;
-  const progressPercentage = totalExercises > 0 ? (completedExercises / totalExercises) * 100 : 0;
 
   return (
-    <Card className={cn(
-      "bg-card border-border hover:shadow-workout transition-all duration-300 hover:scale-[1.02]",
-      completed && "ring-2 ring-accent",
-      className
-    )}>
+    <Card 
+      className={cn(
+        "bg-card border-border hover:shadow-workout transition-all duration-300 hover:scale-[1.02] cursor-pointer",
+        className
+      )}
+      onClick={onViewWorkout}
+    >
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <div>
@@ -45,23 +43,11 @@ export const WorkoutCard = ({
             <p className="text-sm text-muted-foreground uppercase tracking-wide">{muscle}</p>
           </div>
           <div className="flex items-center gap-2">
-            {completed ? (
-              <CheckCircle className="h-6 w-6 text-accent" />
-            ) : (
-              <Circle className="h-6 w-6 text-muted-foreground" />
-            )}
-            <Badge variant={completed ? "default" : "secondary"} className="text-xs">
-              {completedExercises}/{totalExercises}
+            <Badge variant="secondary" className="text-xs">
+              {totalExercises} exercises
             </Badge>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
           </div>
-        </div>
-        
-        {/* Progress Bar */}
-        <div className="w-full bg-secondary rounded-full h-2 mt-3">
-          <div 
-            className="bg-workout-gradient h-2 rounded-full transition-all duration-500"
-            style={{ width: `${progressPercentage}%` }}
-          />
         </div>
       </CardHeader>
 
@@ -86,11 +72,14 @@ export const WorkoutCard = ({
         </div>
 
         <Button 
-          onClick={onStartWorkout}
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewWorkout?.();
+          }}
           className="w-full bg-workout-gradient hover:shadow-workout-glow transition-all duration-300"
           size="sm"
         >
-          {completed ? "Review Workout" : "Start Workout"}
+          View Workout Details
         </Button>
       </CardContent>
     </Card>
